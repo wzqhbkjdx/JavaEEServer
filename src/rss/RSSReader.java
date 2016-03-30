@@ -38,10 +38,11 @@ public class RSSReader {
 			e.printStackTrace();
 		}
 		
-		
 		return mRSSItems;
 		
 	}
+	
+	
 	
 
 }

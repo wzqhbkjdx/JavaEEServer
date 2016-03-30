@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +26,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import database.MyDatabase;
+import fastjson.FastJsonTools;
+
 public class XmlParser {
 	
 	private static Document document;
@@ -44,14 +48,13 @@ public class XmlParser {
 	}
 	
 	public static Map<String,String> parserXmltoMap(String fileName) {
-		Map<String,String> map = new HashMap<>();
-		StringBuffer sb = new StringBuffer("/Users/bym/xmldoc/");
-		sb.append(fileName).append(".xml");
+		Map<String,String> map = new LinkedHashMap<>();
+		String path = MyDatabase.queryFromDatabase(fileName);
 		init();
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
-            Document document = db.parse(sb.toString());
+            Document document = db.parse(path);
              
             NodeList employees = document.getChildNodes();
             for (int i = 0; i < employees.getLength(); i++) {
@@ -61,9 +64,9 @@ public class XmlParser {
                     Node node = employeeInfo.item(j);
                     NodeList employeeMeta = node.getChildNodes();
                     for (int k = 0; k < employeeMeta.getLength(); k++) {
-                        System.out.println(employeeMeta.item(k).getNodeName()
-                                + ":" + employeeMeta.item(k).getTextContent());
-                        map.put(employeeMeta.item(k).getNodeName(), employeeMeta.item(k).getTextContent());
+//                        System.out.println(employeeMeta.item(k).getNodeName()
+//                                + ":" + employeeMeta.item(k).getTextContent());
+                        map.put(employeeMeta.item(k).getNodeName() + k, employeeMeta.item(k).getTextContent());
                     }
                 }
             }
@@ -80,7 +83,9 @@ public class XmlParser {
         return map;
     }
 	
+	//synchronized
 	public static void createXmlFromList(String fileName, List<org.jsoup.nodes.Element> list) {
+		Map<String,String> map = new HashMap<>();
 		init();
 		StringBuffer sb = new StringBuffer("/Users/bym/xmldoc/");
 		sb.append(fileName).append(".xml");
@@ -113,8 +118,8 @@ public class XmlParser {
             /**
              * 保存成功后返回一个map 键：fileName 值：path
              */
-            
-            
+            map.put(fileName, sb.toString());
+            MyDatabase.insertIntoDatabase(map);
             
         } catch (TransformerConfigurationException e) {
             System.out.println(e.getMessage());
@@ -128,10 +133,10 @@ public class XmlParser {
 	}
 	
 	
-//	public static void main(String[] args) {
-//		String str = "/Users/bym/xmldoc/filename.xml";
-////		createXml(str);
-//		parserXml(str);
-//	}
+	public static void main(String[] args) {
+		Map<String, String> map = XmlParser.parserXmltoMap("2016-03-30 16:36:35.593");
+		String result = FastJsonTools.createJsonString(map);
+		System.out.print(result);
+	}
 
 }

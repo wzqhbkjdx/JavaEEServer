@@ -12,6 +12,7 @@ import rss.NewsItem;
 
 public class JsoupParser {
 	
+	
 	private List<String> parseHtml(String url) {
 		 List<Element> elementList = new ArrayList<>();
 		 List<String> newsDetail = new ArrayList<>();
@@ -27,6 +28,7 @@ public class JsoupParser {
 	                Elements imgElements = e.select("img");
 	                for(Element ele : imgElements) {
 	                	elementList.add(ele);
+	                	
 	                }
 	                    	
 	            }
@@ -48,7 +50,7 @@ public class JsoupParser {
 
 	}
 	
-	public List<Element> parseHtmlForXml(String url) {
+	public static List<Element> parseHtmlForXml(String url) {
 		List<Element> elementList = new ArrayList<>();
 		try 
 		{
@@ -70,9 +72,9 @@ public class JsoupParser {
 			e.printStackTrace();
 		}
 		
-		for(Element e : elementList) {
-			System.out.println(e.toString());
-		}
+//		for(Element e : elementList) {
+//			System.out.println(e.toString());
+//		}
 		
 		return elementList;
 

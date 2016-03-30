@@ -9,5 +9,7 @@ public class FastJsonTools {
 		jsonString = JSON.toJSONString(object);
 		return jsonString;
 	}
+	
+	
 
 }
