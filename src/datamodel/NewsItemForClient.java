@@ -8,9 +8,27 @@ public class NewsItemForClient {
 	private String pubDate;
 	private String original;
 	private String timeStamp;
+	private String detailNo;
+	private int category;
 	
 	
 	
+	public int getCategory() {
+		return category;
+	}
+
+	public void setCategory(int category) {
+		this.category = category;
+	}
+
+	public String getDetailNo() {
+		return detailNo;
+	}
+
+	public void setDetailNo(String detailNo) {
+		this.detailNo = detailNo;
+	}
+
 	public String getNewsDetailLink() {
 		return newsDetailLink;
 	}

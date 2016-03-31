@@ -3,62 +3,58 @@ package getdata;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.jsoup.nodes.Element;
 
+import database.MyDatabase;
 import datamodel.NewsItemForClient;
 import jsoupparse.JsoupParser;
 import rss.NewsItem;
 import rss.RSSReader;
 import utils.DateGetter;
+import utils.MyConstants;
 import xmlparse.XmlParser;
 
 public class DataResolver {
 	
-	public static synchronized void dataResolve(String url, String original) {
+	/**
+	 * 解析Rss源，并解析新闻的详细内容，将数据保存到newsItem的数据库表中，详细内容连接保存到newsDetail表中，详细内容保存到xml文件中，
+	 * @param url rss源
+	 * @param original 新闻来源
+	 * @param xmlPath xml文件保存路径
+	 * @param category 新闻类型
+	 */
+	public static synchronized void dataResolve(String url, String original,String xmlPath, int category) {
 		
-		//解析RSS
+		//1.从Rss源获得一批新闻
 		List<NewsItem> list = RSSReader.getRSS(url);
 		List<NewsItemForClient> clientNewsList = new ArrayList<>();
-		
-		//将解析好的RSSitem转换为发送给客户端的数据Model
+		//2.对比数据库中的新闻列表的最新pubDate与获取到的rss新闻的pubdate 比该新闻新的进入数据库，比该新闻旧的抛弃
+		//获取当前数据库中存在的pubDate的最大值
+		long maxPubdate = MyDatabase.getMaxPubdate(category);
 		for(NewsItem item : list) {
 			
-			NewsItemForClient newsItemForClient = new NewsItemForClient();
-			
-			newsItemForClient.setTitle(item.getTitle());
-			newsItemForClient.setNewsDetailLink(item.getLink());
-			newsItemForClient.setPubDate(item.getPubDate());
-			newsItemForClient.setOriginal(original);
-			newsItemForClient.setTimeStamp(DateGetter.getIntegrateTime());
-			
-			//NewsItemForClient没有直接获取到的detailNo以及picLink需要进一步获取
-			//且同时生成detailNo对应的xml文件 并将detailNo以及xml文件的路径存入数据库
-			
-			//用jsoup解析html文件的方式解析获取新闻详情
-			List<Element> elementList = JsoupParser.parseHtmlForXml(newsItemForClient.getNewsDetailLink());
-			//设置图片的链接
-			newsItemForClient.setPicLink(getPicLink(elementList));
-			//将新闻详情保存到xml文件中，并将相关路径信息存入数据库
-			XmlParser.createXmlFromList(newsItemForClient.getTimeStamp(), elementList);
-			
-			clientNewsList.add(newsItemForClient);
-			
-			
-			/**
-			 * 思路：
-			 * 0.修改NewsItemForClient数据格式pubDate为long型
-			 * 1.先判断新闻是否值得存 通过pubdate比较
-			 * 2.然后保存该新闻，保存该新闻后再保存新闻详情到xml文件，同时存储索引数据库
-			 */
+			long pubdate = DateGetter.parsePubdateToLong(DateGetter.parsePubdate(item.getPubDate()));
+			//得到item的pubdate与maxpubdate进行比较
+			if(pubdate > maxPubdate) {
+				System.out.println(pubdate);
+				NewsItemForClient newsItemForClient = new NewsItemForClient();
+				newsItemForClient.setTitle(item.getTitle());
+				newsItemForClient.setNewsDetailLink(item.getLink());
+				newsItemForClient.setPubDate(DateGetter.parsePubdate(item.getPubDate()));
+				newsItemForClient.setOriginal(original);
+				newsItemForClient.setDetailNo(DateGetter.getIntegrateTime());
+				newsItemForClient.setCategory(category);
+				List<Element> elementList = JsoupParser.parseHtmlForXml(newsItemForClient.getNewsDetailLink());//用jsoup解析html文件的方式解析获取新闻详情并保存到List中
+				newsItemForClient.setPicLink(getPicLink(elementList));//设置图片的链接
+				XmlParser.createXmlFromList(newsItemForClient.getPubDate().toString(), elementList,xmlPath);//将新闻详情保存到xml文件，
+				clientNewsList.add(newsItemForClient);
+			}
 			
 		}
-		
-		
-		
-		//NewsItemForClient获取完整后也存入数据库
-		
-		
+
+		MyDatabase.insertNewsItems(clientNewsList);
 		
 	}
 	
@@ -74,10 +70,11 @@ public class DataResolver {
 	}
 	
 	public static void main(String[] args) throws ParseException {
-//		long start = System.currentTimeMillis();
-//		dataResolve(MyConstants.RSSURLZGHKW,"中国航空新闻网");
-//		long end = System.currentTimeMillis();
-//		System.out.println("获取rss并保存数据共耗时：" + (end - start)/1000);
+		long start = System.currentTimeMillis();
+		dataResolve(MyConstants.RSSURLZGHKWLSJDHZ,"中国航空新闻网",MyConstants.XMLPATHOFLSJDHZ,MyConstants.CATEGORYZGHKWLSJDHZ);
+		dataResolve(MyConstants.RSSURLZGHKWNEWSCENTER,"中国航空新闻网",MyConstants.XMLPATHOFNEWSCENTER,MyConstants.CATEGORYZGHKWNEWSCENTER);
+		long end = System.currentTimeMillis();
+		System.out.println("获取rss并保存数据共耗时：" + (end - start)/1000);
 		
 		
 	}

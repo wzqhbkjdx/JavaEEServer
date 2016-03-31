@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import datamodel.NewsItemForClient;
+import utils.DateGetter;
 
 /**
  * 删除表DROP TABLE IF EXISTS tbl_name;
@@ -23,6 +24,14 @@ import datamodel.NewsItemForClient;
  *
  * create table if not existis newsItem();
  * create table IF NOT EXISTS newsDetail(id integer primary key,NO char(80),path text);
+ * create table if not exists newsItem(id integer primary key auto_increment,title text,newsDetailLink text,picLink text,pubDate text,original text,)
+ * 设置主键自增长：alter table newsItem modify id integer auto_increment ;
+ * 获取表的最后一天数据：select * from newsDetail order by id desc limit 1;
+ * 插入新闻列表：create table if not exists newsItem(id integer auto_increment,title text,newsDetailLink text,picLink text,pubDate bigInt(20) primary key,original text,time timestamp default CURRENT_TIMESTAMP, detailNo text);
+ * create table if not exists newsItem(id integer auto_increment,title text,newsDetailLink text,picLink text,pubDate bigInt(20),original text,time timestamp default CURRENT_TIMESTAMP, detailNo text,primary key(id,pubDate));
+ * insert into newsDetail(NO,path) values('2016001','/Users/bym/xmldoc/2016001.xml')
+ * 
+ * 查询某id的pubdate最大值：select max(pubDate) from newsItem where id = '50';
  */
 
 
@@ -44,7 +53,7 @@ public class MyDatabase {
         String url = "jdbc:mysql://localhost:3306/javademo?" //直接连接到某个数据库
                 + "user=root&password=871028&useUnicode=true&characterEncoding=UTF8";
         String url1 = "jdbc:mysql://localhost/mysql?"
-                + "user=root&password=871028&useUnicode=true&characterEncoding=UTF8";
+                + "user=root&password=871028&useUnicode=true&characterEncoding=UTF8&useSSL=false";
         try {
         	Class.forName("com.mysql.jdbc.Driver");
     		System.out.println("成功加载MySQL驱动程序");
@@ -60,19 +69,48 @@ public class MyDatabase {
         
 	}
 	
-	
-	private static void createDatabase(String databaseName) {
-		
+	public static long getMaxPubdate(int category){
 		initConnection();
-		//判断数据库是否被创建过，没有创建再创建
-		String check = "SELECT * FROM information_schema.SCHEMATA where SCHEMA_NAME=" + "'" + databaseName + "'";
-		String sql = "CREATE DATABASE " + databaseName;
+		long maxPubdate = 0;
 		try {
-//			boolean result = stmt.execute(check);
-				stmt.executeUpdate(sql);
-				System.out.println("创建数据库" + databaseName + "成功");
+			if(result != -1) {
+				stmt.executeUpdate("create table if not exists newsItem(id integer primary key auto_increment, "
+						+ "title text,newsDetailLink text,picLink text,pubDate bigInt(20), original text,time timestamp default CURRENT_TIMESTAMP, detailNo text)");
+				String sql = "select max(pubDate) from newsItem where category = '" + category + "'";//select max(pubDate) from newsItem where id = '50';
+				ResultSet rs = stmt.executeQuery(sql);// executeQuery会返回结果的集合，否则返回空值
+				while (rs.next()) {
+					maxPubdate = rs.getLong(1);
+				}
+				
+			}
 			
-		} catch (SQLException e) {
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return maxPubdate;
+	}
+	
+	public static void insertNewsItems(List<NewsItemForClient> list){
+		initConnection();
+		try {
+			if(result != -1) {
+				stmt.executeUpdate("create table if not exists newsItem(id integer primary key auto_increment, "
+						+ "title text,newsDetailLink text,picLink text,pubDate bigInt(20), original text,time timestamp default CURRENT_TIMESTAMP, detailNo text)");
+				for(NewsItemForClient item : list) {
+					stmt.executeUpdate("insert into newsItem(title,newsDetailLink,picLink,pubDate,original,detailNo,category)"    
+							+ "values('" + item.getTitle() + "','" + item.getNewsDetailLink() + "','" + item.getPicLink() + "','" + DateGetter.parsePubdateToLong(item.getPubDate()) + "','" + item.getOriginal() + "','" + item.getDetailNo() + "','" + item.getCategory() +"')");
+					System.out.println("成功保存一条记录");
+				}
+				
+			}
+			
+		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			try {
@@ -83,6 +121,9 @@ public class MyDatabase {
 		}
 	}
 	
+	
+	
+	
 	/**
 	 * 将新闻详情的xml文件路径保存到数据库中
 	 * @param map
@@ -91,6 +132,7 @@ public class MyDatabase {
 		initConnection();
 		try {
 			if(result != -1) {
+				stmt.executeUpdate("create table IF NOT EXISTS newsDetail(id integer primary key,NO char(80),path text)");
 				Set<String> set = map.keySet();
 				for(String str : set) {
 					try {
@@ -120,8 +162,9 @@ public class MyDatabase {
         try {
         	
         	try {
-				
+					
 				if(result != -1) {
+					stmt.executeUpdate("create table IF NOT EXISTS newsDetail(id integer primary key,NO char(80),path text)");
 					String sql = "select path from newsDetail where NO = '" + number + "'";
 					ResultSet rs = stmt.executeQuery(sql);// executeQuery会返回结果的集合，否则返回空值
 					while (rs.next()) {
@@ -147,17 +190,31 @@ public class MyDatabase {
 
 	}
 	
-	public static void saveNewsItemToDatabase(List<NewsItemForClient> list) {
+	private static void createDatabase(String databaseName) {
 		
+		initConnection();
+		//判断数据库是否被创建过，没有创建再创建
+		String check = "SELECT * FROM information_schema.SCHEMATA where SCHEMA_NAME=" + "'" + databaseName + "'";
+		String sql = "CREATE DATABASE " + databaseName;
+		try {
+			//boolean result = stmt.execute(check);
+				stmt.executeUpdate(sql);
+				System.out.println("创建数据库" + databaseName + "成功");
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
-//	public static void main(String[] args){
-//		Map<String,String> map = new HashMap<>();
-//		map.put("12345678", "12345678.xml");
-//		map.put("87654321", "87654321.xml");
-//		insertIntoDatabase(map);
-//		queryFromDatabase("12345678");
-//	}
+	public static void main(String[] args){
+//		System.out.println(getMaxPubdate());
+	}
 
 }
 

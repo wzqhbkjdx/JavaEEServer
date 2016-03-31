@@ -84,10 +84,10 @@ public class XmlParser {
     }
 	
 	//synchronized
-	public static void createXmlFromList(String fileName, List<org.jsoup.nodes.Element> list) {
+	public static Map<String,String> createXmlFromList(String fileName, List<org.jsoup.nodes.Element> list, String xmlPath) {
 		Map<String,String> map = new HashMap<>();
 		init();
-		StringBuffer sb = new StringBuffer("/Users/bym/xmldoc/");
+		StringBuffer sb = new StringBuffer(xmlPath);
 		sb.append(fileName).append(".xml");
 		Element root = document.createElement("scores"); 
 		document.appendChild(root); 
@@ -130,6 +130,8 @@ public class XmlParser {
         } catch (TransformerException e) {
             System.out.println(e.getMessage());
         }
+        
+        return map;
 	}
 	
 	

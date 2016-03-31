@@ -36,13 +36,13 @@ public class DateGetter {
 		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
 		String standardDate = format.format(Date.parse(pubDate));
 		
-//		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss",Locale.US);
-//		Date parse = sdf.parse("Wed, 30 Mar 2016 17:12:28 +0800");
-		
-		
-		System.out.println(standardDate);
-//		System.out.println(parse.toString());
 		return standardDate;
+	}
+	
+	public static long parsePubdateToLong(String pubDate) {
+	
+		long date = Long.valueOf(pubDate);
+		return date;
 	}
 	
 	public static String getIntegrateTime() {
@@ -51,7 +51,7 @@ public class DateGetter {
 	}
 	
 	public static void main(String[] args) {
-		System.out.println(parsePubdate("Wed, 30 Mar 2016 14:52:00 +0800"));
+//		System.out.println(parsePubdateToLong("Wed, 31 Mar 2017 14:54:00 +0800"));
 	}
 
 }

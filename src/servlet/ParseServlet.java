@@ -33,24 +33,24 @@ public class ParseServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 //		JsoupParser jp = new JsoupParser();
 		//用jsoup解析html文件的方式解析获取新闻详情
-		List<Element> elementList = JsoupParser.parseHtmlForXml(URL);
-		String nowDate = DateGetter.getDate();
-		
-		response.setContentType("text/html;charset=utf-8");  
-        request.setCharacterEncoding("utf-8");  
-        response.setCharacterEncoding("utf-8");  
-        PrintWriter writer = response.getWriter();
+//		List<Element> elementList = JsoupParser.parseHtmlForXml(URL);
+//		String nowDate = DateGetter.getDate();
+//		
+//		response.setContentType("text/html;charset=utf-8");  
+//        request.setCharacterEncoding("utf-8");  
+//        response.setCharacterEncoding("utf-8");  
+//        PrintWriter writer = response.getWriter();
 		
 		//将新闻详情保存到xml文件中，并将相关路径信息存入数据库
-		XmlParser.createXmlFromList(nowDate.trim(), elementList);
+//		XmlParser.createXmlFromList(nowDate.trim(), elementList);
 		//通过数据库获取本地的xml数据path
-		String path = MyDatabase.queryFromDatabase(nowDate);
-		Map<String, String> map = XmlParser.parserXmltoMap(nowDate);
-		String result = FastJsonTools.createJsonString(map);
-		
-		writer.write(result);
-		
-		System.out.println(result);
+//		String path = MyDatabase.queryFromDatabase(nowDate);
+//		Map<String, String> map = XmlParser.parserXmltoMap(nowDate);
+//		String result = FastJsonTools.createJsonString(map);
+//		
+//		writer.write(result);
+//		
+//		System.out.println(result);
 		
 		//读取本地xml文件发送给客户端
 //		BufferedInputStream bis = new BufferedInputStream(new FileInputStream(path));
