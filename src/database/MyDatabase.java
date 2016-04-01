@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,6 +38,10 @@ import utils.DateGetter;
 
 
 public class MyDatabase {
+	
+	private static final String CREATENEWSITEMTABLE = "create table if not exists newsItem(id integer primary key auto_increment, "
+			+ "title text,newsDetailLink text,picLink text,pubDate bigInt(20), original text,time timestamp default CURRENT_TIMESTAMP, detailNo text, category integer) charset utf8 collate utf8_general_ci";
+	private static final String CREATENEWSDETAILTABLE = "create table IF NOT EXISTS newsDetail(id integer primary key auto_increment,NO char(80),path text) charset utf8 collate utf8_general_ci";
 	
 	
 	private static Connection conn = null;
@@ -74,8 +79,7 @@ public class MyDatabase {
 		long maxPubdate = 0;
 		try {
 			if(result != -1) {
-				stmt.executeUpdate("create table if not exists newsItem(id integer primary key auto_increment, "
-						+ "title text,newsDetailLink text,picLink text,pubDate bigInt(20), original text,time timestamp default CURRENT_TIMESTAMP, detailNo text)");
+				stmt.executeUpdate(CREATENEWSITEMTABLE);
 				String sql = "select max(pubDate) from newsItem where category = '" + category + "'";//select max(pubDate) from newsItem where id = '50';
 				ResultSet rs = stmt.executeQuery(sql);// executeQuery会返回结果的集合，否则返回空值
 				while (rs.next()) {
@@ -100,8 +104,7 @@ public class MyDatabase {
 		initConnection();
 		try {
 			if(result != -1) {
-				stmt.executeUpdate("create table if not exists newsItem(id integer primary key auto_increment, "
-						+ "title text,newsDetailLink text,picLink text,pubDate bigInt(20), original text,time timestamp default CURRENT_TIMESTAMP, detailNo text)");
+				stmt.executeUpdate(CREATENEWSITEMTABLE);
 				for(NewsItemForClient item : list) {
 					stmt.executeUpdate("insert into newsItem(title,newsDetailLink,picLink,pubDate,original,detailNo,category)"    
 							+ "values('" + item.getTitle() + "','" + item.getNewsDetailLink() + "','" + item.getPicLink() + "','" + DateGetter.parsePubdateToLong(item.getPubDate()) + "','" + item.getOriginal() + "','" + item.getDetailNo() + "','" + item.getCategory() +"')");
@@ -121,9 +124,6 @@ public class MyDatabase {
 		}
 	}
 	
-	
-	
-	
 	/**
 	 * 将新闻详情的xml文件路径保存到数据库中
 	 * @param map
@@ -132,7 +132,7 @@ public class MyDatabase {
 		initConnection();
 		try {
 			if(result != -1) {
-				stmt.executeUpdate("create table IF NOT EXISTS newsDetail(id integer primary key,NO char(80),path text)");
+				stmt.executeUpdate(CREATENEWSDETAILTABLE);
 				Set<String> set = map.keySet();
 				for(String str : set) {
 					try {
@@ -147,7 +147,9 @@ public class MyDatabase {
 			e.printStackTrace();
 		} finally {
 			try {
+				stmt.close();
 				conn.close();
+				
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -155,8 +157,48 @@ public class MyDatabase {
 		
 	}
 	
+	public List<NewsItemForClient> queryNewsItemsFromDatabase(String pubDate,int category) {
+		List<NewsItemForClient> list = new ArrayList<>();
+		long pubdate = Long.valueOf(pubDate);
+		initConnection();
+		try {
+			if(result != -1) { //select * from newsItem where pubDate > 20160331104122 and category = 1
+				stmt.executeUpdate(CREATENEWSITEMTABLE);
+				String sql = "select * from newsItem where pubDate > " + pubdate + " and category = " + category;
+				ResultSet rs = stmt.executeQuery(sql);// executeQuery会返回结果的集合，否则返回空值
+				while (rs.next()) {
+					NewsItemForClient item = new NewsItemForClient();
+					item.setCategory(category);
+					item.setTitle(rs.getString(2));
+					item.setNewsDetailLink(rs.getString(3));
+					item.setPicLink(rs.getString(4));
+					item.setPubDate(rs.getString(5));
+					item.setOriginal(rs.getString(6));
+					item.setTimeStamp(rs.getString(7));
+					item.setDetailNo(rs.getString(8));
+					list.add(item);
+				}
+				
+				rs.close();
+				
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				stmt.close();
+				conn.close();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return list;
+	}
 	
-	public static String queryFromDatabase(String number) {
+	
+	public static String queryPathFromDatabase(String number) {
 		String xmlPath = null;
 		initConnection();
         try {
@@ -164,13 +206,14 @@ public class MyDatabase {
         	try {
 					
 				if(result != -1) {
-					stmt.executeUpdate("create table IF NOT EXISTS newsDetail(id integer primary key,NO char(80),path text)");
+					stmt.executeUpdate(CREATENEWSDETAILTABLE);
 					String sql = "select path from newsDetail where NO = '" + number + "'";
 					ResultSet rs = stmt.executeQuery(sql);// executeQuery会返回结果的集合，否则返回空值
 					while (rs.next()) {
 						xmlPath = rs.getString(1);
 						System.out.println(xmlPath);// 如果返回的是int类型可以用getInt()
 					}
+					rs.close();
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -180,7 +223,9 @@ public class MyDatabase {
         	e.printStackTrace();
         } finally {
         	try {
+        		stmt.close();
 				conn.close();
+				
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -205,15 +250,18 @@ public class MyDatabase {
 			e.printStackTrace();
 		} finally {
 			try {
+				stmt.close();
 				conn.close();
+				
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
 	}
 	
-	public static void main(String[] args){
-//		System.out.println(getMaxPubdate());
+	public static void main(String[] args) {
+		MyDatabase mdb = new MyDatabase();
+		mdb.queryNewsItemsFromDatabase("20160331104122",1);
 	}
 
 }

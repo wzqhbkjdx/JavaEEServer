@@ -3,7 +3,6 @@ package getdata;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.jsoup.nodes.Element;
 
@@ -13,7 +12,6 @@ import jsoupparse.JsoupParser;
 import rss.NewsItem;
 import rss.RSSReader;
 import utils.DateGetter;
-import utils.MyConstants;
 import xmlparse.XmlParser;
 
 public class DataResolver {
@@ -70,11 +68,11 @@ public class DataResolver {
 	}
 	
 	public static void main(String[] args) throws ParseException {
-		long start = System.currentTimeMillis();
-		dataResolve(MyConstants.RSSURLZGHKWLSJDHZ,"中国航空新闻网",MyConstants.XMLPATHOFLSJDHZ,MyConstants.CATEGORYZGHKWLSJDHZ);
-		dataResolve(MyConstants.RSSURLZGHKWNEWSCENTER,"中国航空新闻网",MyConstants.XMLPATHOFNEWSCENTER,MyConstants.CATEGORYZGHKWNEWSCENTER);
-		long end = System.currentTimeMillis();
-		System.out.println("获取rss并保存数据共耗时：" + (end - start)/1000);
+//		long start = System.currentTimeMillis();
+//		DataResolver.dataResolve(MyConstants.RSSURLZGHKWLSJDHZ,"中国航空新闻网",MyConstants.XMLPATHONALIYUNLSJDHZ,MyConstants.CATEGORYZGHKWLSJDHZ);
+//		DataResolver.dataResolve(MyConstants.RSSURLZGHKWNEWSCENTER,"中国航空新闻网",MyConstants.XMLPATHONALIYUNNEWSCENTER,MyConstants.CATEGORYZGHKWNEWSCENTER);
+//		long end = System.currentTimeMillis();
+//		System.out.println("获取rss并保存数据共耗时：" + (end - start)/1000);
 		
 		
 	}

@@ -2,22 +2,15 @@ package rss;
 
 import java.util.List;
 
+import datamodel.NewsItemForClient;
+
 public class NewsData {
 	private String date;
     private String error;
-    private String ErrorType;
     private String ErrorMessage;
+    
 
-    private List<NewsItem> newsItems;
-    private List<PicBanner> banners;
-
-    public List<PicBanner> getBanners() {
-        return banners;
-    }
-
-    public void setBanners(List<PicBanner> banners) {
-        this.banners = banners;
-    }
+    private List<NewsItemForClient> newsItems;
 
     public String getError() {
         return error;
@@ -27,13 +20,6 @@ public class NewsData {
         this.error = error;
     }
 
-    public String getErrorType() {
-        return ErrorType;
-    }
-
-    public void setErrorType(String errorType) {
-        ErrorType = errorType;
-    }
 
     public String getErrorMessage() {
         return ErrorMessage;
@@ -51,11 +37,11 @@ public class NewsData {
         this.date = date;
     }
 
-    public List<NewsItem> getNewsItems() {
+    public List<NewsItemForClient> getNewsItems() {
         return newsItems;
     }
 
-    public void setNewsItems(List<NewsItem> newsItems) {
+    public void setNewsItems(List<NewsItemForClient> newsItems) {
         this.newsItems = newsItems;
     }
 	

@@ -49,7 +49,7 @@ public class XmlParser {
 	
 	public static Map<String,String> parserXmltoMap(String fileName) {
 		Map<String,String> map = new LinkedHashMap<>();
-		String path = MyDatabase.queryFromDatabase(fileName);
+		String path = MyDatabase.queryPathFromDatabase(fileName);
 		init();
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
