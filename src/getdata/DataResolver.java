@@ -7,9 +7,9 @@ import java.util.List;
 import org.jsoup.nodes.Element;
 
 import database.MyDatabase;
-import datamodel.NewsItemForClient;
+import datamodel.NewsItem;
 import jsoupparse.JsoupParser;
-import rss.NewsItem;
+import rss.PicBanner;
 import rss.RSSReader;
 import utils.DateGetter;
 import xmlparse.XmlParser;
@@ -27,26 +27,26 @@ public class DataResolver {
 		
 		//1.从Rss源获得一批新闻
 		List<NewsItem> list = RSSReader.getRSS(url);
-		List<NewsItemForClient> clientNewsList = new ArrayList<>();
+		List<NewsItem> clientNewsList = new ArrayList<>();
 		//2.对比数据库中的新闻列表的最新pubDate与获取到的rss新闻的pubdate 比该新闻新的进入数据库，比该新闻旧的抛弃
 		//获取当前数据库中存在的pubDate的最大值
-		long maxPubdate = MyDatabase.getMaxPubdate(category);
+		long maxPubdate = MyDatabase.getMaxPubdateFromNewsItem(category);
 		for(NewsItem item : list) {
 			
-			long pubdate = DateGetter.parsePubdateToLong(DateGetter.parsePubdate(item.getPubDate()));
+			long pubdate = item.getPubDate();
 			//得到item的pubdate与maxpubdate进行比较
 			if(pubdate > maxPubdate) {
-				System.out.println(pubdate);
-				NewsItemForClient newsItemForClient = new NewsItemForClient();
+//				System.out.println(pubdate);
+				NewsItem newsItemForClient = new NewsItem();
 				newsItemForClient.setTitle(item.getTitle());
-				newsItemForClient.setNewsDetailLink(item.getLink());
-				newsItemForClient.setPubDate(DateGetter.parsePubdate(item.getPubDate()));
+				newsItemForClient.setNewsDetailLink(item.getNewsDetailLink());
+				newsItemForClient.setPubDate(item.getPubDate());
 				newsItemForClient.setOriginal(original);
 				newsItemForClient.setDetailNo(DateGetter.getIntegrateTime());
 				newsItemForClient.setCategory(category);
 				List<Element> elementList = JsoupParser.parseHtmlForXml(newsItemForClient.getNewsDetailLink());//用jsoup解析html文件的方式解析获取新闻详情并保存到List中
 				newsItemForClient.setPicLink(getPicLink(elementList));//设置图片的链接
-				XmlParser.createXmlFromList(newsItemForClient.getPubDate().toString(), elementList,xmlPath);//将新闻详情保存到xml文件，
+				XmlParser.createXmlFromList(String.valueOf(newsItemForClient.getPubDate()), elementList,xmlPath);//将新闻详情保存到xml文件，
 				clientNewsList.add(newsItemForClient);
 			}
 			
@@ -54,6 +54,31 @@ public class DataResolver {
 
 		MyDatabase.insertNewsItems(clientNewsList);
 		
+	}
+	
+	public static synchronized void picDataResolve(String picXmlPath, String original, int category) {
+		//1.从xml文件中获取picBanner的信息
+		List<PicBanner> picList = RSSReader.getPicRss(picXmlPath);
+		List<PicBanner> bannerList = new ArrayList();
+		//2.对比数据库中的新闻列表的最新pubDate与获取到的图片新闻的pubdate比该新闻新的进入数据库，比该新闻旧的抛弃
+		long maxPubdate = MyDatabase.getMaxPubdateFromPicItem(category);
+		//3.逐个对比，存入数据库
+		for(PicBanner banner : picList) {
+			long pubdate = banner.getPubDate();
+			if(pubdate > maxPubdate) {
+				PicBanner picBanner = new PicBanner();
+				picBanner.setTitle(banner.getTitle());
+				picBanner.setLink(banner.getLink());
+				picBanner.setPicLinkList(banner.getPicLinks());
+				picBanner.setPubDate(banner.getPubDate());
+				picBanner.setCategory(category);
+				picBanner.setOriginal(original);
+				picBanner.setDetailNo(DateGetter.getIntegrateTime());
+				picBanner.setDescription(banner.getDescription());
+				bannerList.add(picBanner);
+			}
+		}
+		MyDatabase.insertPicItems(bannerList);
 	}
 	
 	private static String getPicLink(List<Element> list) {
@@ -68,11 +93,7 @@ public class DataResolver {
 	}
 	
 	public static void main(String[] args) throws ParseException {
-//		long start = System.currentTimeMillis();
-//		DataResolver.dataResolve(MyConstants.RSSURLZGHKWLSJDHZ,"中国航空新闻网",MyConstants.XMLPATHONALIYUNLSJDHZ,MyConstants.CATEGORYZGHKWLSJDHZ);
-//		DataResolver.dataResolve(MyConstants.RSSURLZGHKWNEWSCENTER,"中国航空新闻网",MyConstants.XMLPATHONALIYUNNEWSCENTER,MyConstants.CATEGORYZGHKWNEWSCENTER);
-//		long end = System.currentTimeMillis();
-//		System.out.println("获取rss并保存数据共耗时：" + (end - start)/1000);
+		picDataResolve("/Users/bym/Documents/NewFile.xml", "中国航空新闻网", 1);
 		
 		
 	}

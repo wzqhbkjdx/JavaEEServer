@@ -5,6 +5,9 @@ import java.util.List;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
+import datamodel.NewsItem;
+import utils.DateGetter;
+
 public class RSSHandler extends DefaultHandler {
 	
 	private NewsItem mRSSItem;  
@@ -67,15 +70,15 @@ public class RSSHandler extends DefaultHandler {
             currentState = 0;  
             break;                
         case LINK_STATE:  
-            mRSSItem.setLink(str);  
+            mRSSItem.setNewsDetailLink(str);
             currentState = 0;  
             break;      
         case DESCRIPTION_STATE:  
-            mRSSItem.setDescription(str);  
+//            mRSSItem.setDescription(str);  
             currentState = 0;  
             break;      
         case PUBDATE_STATE:  
-            mRSSItem.setPubDate(str);  
+            mRSSItem.setPubDate(DateGetter.parsePubdateToLong(str));  
             currentState = 0;  
             break;  
         }  

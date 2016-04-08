@@ -5,6 +5,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import rss.PicBanner;
+
 public class DateGetter {
 	
 	public static String getDate(){
@@ -41,7 +43,7 @@ public class DateGetter {
 	
 	public static long parsePubdateToLong(String pubDate) {
 	
-		long date = Long.valueOf(pubDate);
+		long date = Long.valueOf(parsePubdate(pubDate));
 		return date;
 	}
 	
@@ -51,7 +53,9 @@ public class DateGetter {
 	}
 	
 	public static void main(String[] args) {
-//		System.out.println(parsePubdateToLong("Wed, 31 Mar 2017 14:54:00 +0800"));
+		System.out.println(parsePubdateToLong("Fri, 08 Apr 2016 09:39:58 +0800"));
+		PicBanner pb = new PicBanner();
+		pb.setPubDate(parsePubdateToLong("Fri, 08 Apr 2016 09:39:58 +0800"));
 	}
 
 }

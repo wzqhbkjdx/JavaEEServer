@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+
+	<channel>
+		<title>图片中心_中国航空新闻网_航空行业第一新闻门户_CANNEWS</title>
+		<link>http://app.cannews.com.cn?app=rss&amp;controller=index&amp;action=feed&amp;catid=71</link>
+		<description>图片中心</description>
+		<language>zh-cn</language>
+		<copyright>中国航空新闻网_航空行业第一新闻门户_CANNEWS</copyright>
+		<generator>CmsTop</generator>
+		<lastBuildDate>Fri, 08 Apr 2016 10:42:37 +0800</lastBuildDate>
+		<ttl>10</ttl>
+
+		<item>
+			<title>组图：747机长将发动机改装成车 配音响与喷烟装置</title>
+			<link>http://www.cannews.com.cn/2016/0408/151504.shtml</link>
+			<description>
+			<![CDATA[保罗·霍尔姆斯（Paul Holmes）曾经是一名拥有30多年驾驶经验的波音747机长。退休后，他买了一台旧喷气航发，将其改装成了一辆可以行驶的车。此车可载客两人，并安装了音响和喷烟装置。保罗还购买了一些退役747的其他部件，将这辆车打造成一个“浓缩版”的波音747。]]>
+			</description>
+			<category><![CDATA[ 民航组图 ]]></category>
+			<guid>http://www.cannews.com.cn/2016/0408/151504.shtml</guid>
+			<picLink>http://upload.cannews.com.cn/2016/0408/1460079613661.JPG</picLink>
+			<picLink>http://upload.cannews.com.cn/2016/0408/1460079615907.jpg</picLink>
+			<picLink>http://upload.cannews.com.cn/2016/0408/1460079616906.jpg</picLink>
+			<picLink>http://upload.cannews.com.cn/2016/0408/1460079616566.jpg</picLink>
+			<picLink>http://upload.cannews.com.cn/2016/0408/1460079618932.jpg</picLink>
+			<picLink>http://upload.cannews.com.cn/2016/0408/1460079619327.png</picLink>
+			<picLink>http://upload.cannews.com.cn/2016/0408/1460079621243.jpg</picLink>
+			<picLink>http://upload.cannews.com.cn/2016/0408/1460079622631.jpg</picLink>
+			<picLink>http://upload.cannews.com.cn/2016/0408/1460079623268.jpg</picLink>
+			<picLink>http://upload.cannews.com.cn/2016/0408/1460079627118.jpg</picLink>
+			<picLink>http://upload.cannews.com.cn/2016/0408/1460079629978.jpg</picLink>
+			<pubDate>Fri, 08 Apr 2016 09:46:04 +0800</pubDate>
+			
+		</item>
+		
+		<item>
+			<title>组图：美国想赶上米-26 结果研制出这个怪胎</title>
+			<link>http://www.cannews.com.cn/2016/0408/151501.shtml</link>
+			<description>
+			<![CDATA[在重型运输直升机领域，美国的CH-47直升机赶苏联的米-26直升机差远了。于是官方极力希望飞机公司能够研制一种能和米-26相媲美的重型运输直升机。波音垂直起降飞机公司接下了这个单子，他们研制的飞机是XCH-62型运输直升机。]]>
+			</description>
+			<category>
+			<![CDATA[ 防务组图 ]]>
+			</category>
+			<guid>http://www.cannews.com.cn/2016/0408/151501.shtml</guid>
+			<picLink>http://upload.cannews.com.cn/2016/0408/1460079490731.jpg</picLink>
+			<picLink>http://upload.cannews.com.cn/2016/0408/1460079491396.jpg</picLink>
+			<picLink>http://upload.cannews.com.cn/2016/0408/1460079492422.jpg</picLink>
+			<picLink>http://upload.cannews.com.cn/2016/0408/1460079493281.jpg</picLink>
+			<picLink>http://upload.cannews.com.cn/2016/0408/1460079493561.jpg</picLink>
+			<picLink>http://upload.cannews.com.cn/2016/0408/1460079494767.jpg</picLink>
+			<picLink>http://upload.cannews.com.cn/2016/0408/1460079495832.jpg</picLink>
+			<picLink>http://upload.cannews.com.cn/2016/0408/1460079496943.jpg</picLink>
+			<picLink>http://upload.cannews.com.cn/2016/0408/1460079497402.jpg</picLink>
+			<picLink>http://upload.cannews.com.cn/2016/0408/1460079498542.jpg</picLink>
+			<picLink>http://upload.cannews.com.cn/2016/0408/1460079499163.jpg</picLink>
+			<picLink>http://upload.cannews.com.cn/2016/0408/1460079500904.jpg</picLink>
+			<picLink>http://upload.cannews.com.cn/2016/0408/1460079501295.jpg</picLink>
+			<pubDate>Fri, 08 Apr 2016 09:39:58 +0800</pubDate>
+		</item>
+
+	</channel>
+	
+</rss>

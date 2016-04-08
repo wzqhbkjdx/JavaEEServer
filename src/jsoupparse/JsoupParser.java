@@ -8,8 +8,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import rss.NewsItem;
-
 public class JsoupParser {
 	
 	
@@ -54,22 +52,27 @@ public class JsoupParser {
 		List<Element> elementList = new ArrayList<>();
 		try 
 		{
-			Document doc = Jsoup.connect(url).timeout(10000).get();
-			Elements elements = doc.getAllElements();
-					
-			for(Element e : elements) {
-				String nodeName = e.nodeName();
-	            if(nodeName.equals("p")) {
-	            	elementList.add(e);
-	                Elements imgElements = e.select("img");
-	                for(Element ele : imgElements) {
-	                	elementList.add(ele);
-	                }
-	            }
+			if(url != null) {
+				Document doc = Jsoup.connect(url).timeout(10000).get();
+				Elements elements = doc.getAllElements();
+						
+				for(Element e : elements) {
+					String nodeName = e.nodeName();
+		            if(nodeName.equals("p")) {
+		            	elementList.add(e);
+		                Elements imgElements = e.select("img");
+		                for(Element ele : imgElements) {
+		                	elementList.add(ele);
+		                }
+		            }
+				}
 			}
+			
 			
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (Exception e) {
+			//如果url为空，则无法解析，所以这里用try catch 捕捉所有的异常
 		}
 		
 //		for(Element e : elementList) {
@@ -80,19 +83,19 @@ public class JsoupParser {
 
 	}
 	
-	public void setNewsDetail(List<NewsItem> newsItems) {
-		
-		for(NewsItem item : newsItems) {
-			item.setNewsDetails(parseHtml(item.getLink()));
-			
-			//test
-//			List<String> list = item.getNewsDetails();
-//			Iterator<String> iterator = list.iterator();
-//			while(iterator.hasNext()){
-//				System.out.println(iterator.next());
-//			}
-		}
-	}
+//	public void setNewsDetail(List<NewsItem> newsItems) {
+//		
+//		for(NewsItem item : newsItems) {
+//			item.setNewsDetails(parseHtml(item.getNewsDetailLink()));
+//			
+//			//test
+////			List<String> list = item.getNewsDetails();
+////			Iterator<String> iterator = list.iterator();
+////			while(iterator.hasNext()){
+////				System.out.println(iterator.next());
+////			}
+//		}
+//	}
 	
 
 }

@@ -33,11 +33,11 @@ public class DBTEST extends HttpServlet {
 		
 //		DataResolver.dataResolve(MyConstants.RSSURLZGHKWLSJDHZ,"中国航空新闻网","/home/wzq/xmldoc/",MyConstants.CATEGORYZGHKWLSJDHZ);
 //		DataResolver.dataResolve(MyConstants.RSSURLZGHKWNEWSCENTER,"中国航空新闻网","/home/wzq/xmldoc2/",MyConstants.CATEGORYZGHKWNEWSCENTER);
+		DataResolver.picDataResolve("/Users/bym/Documents/NewFile.xml", "中国航空新闻网", 1);
 		
 		
 		
-		
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+//		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	/**
@@ -45,7 +45,7 @@ public class DBTEST extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		doGet(request, response);
+//		doGet(request, response);
 	}
 
 }

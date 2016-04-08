@@ -1,5 +1,7 @@
 package rss;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -12,7 +14,8 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
-import jsoupparse.JsoupParser;
+import datamodel.NewsItem;
+import rss.RssNormalHandler.ItemGetter;
 
 public class RSSReader {
 	
@@ -42,7 +45,61 @@ public class RSSReader {
 		
 	}
 	
+	public static List<PicBanner> getPicRss(String path) {
 	
+		List<PicBanner> picBanners = new ArrayList<>();
+		File file = new File(path);
+		try {
+			InputStream in = new FileInputStream(file);
+			SAXParserFactory factory = SAXParserFactory.newInstance();  
+			SAXParser parser = factory.newSAXParser();  
+			XMLReader xmlReader = parser.getXMLReader();
+			
+			RssNormalHandler<PicBanner> mRSSHandler = new RssNormalHandler<PicBanner>(picBanners, new ItemGetter<PicBanner>() {
+
+				@Override
+				public PicBanner getD() {
+					
+					return new PicBanner();
+				}
+				
+			});
+			
+			xmlReader.setContentHandler(mRSSHandler); 
+			xmlReader.parse(new InputSource(in)); 
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return picBanners;
+	}
+	
+	
+	
+	public static void main(String[] args) {
+		List<PicBanner> picBanners = getPicRss("/Users/bym/Documents/NewFile.xml");
+		for(PicBanner banner : picBanners) {
+			System.out.println(banner.getPubDate());
+			System.out.println(banner.getDescription());
+			System.out.println(banner.getTitle());
+			System.out.println(banner.getLink());
+			System.out.println(banner.getPicLinks());
+		}
+		
+	}
 	
 
 }
+
+
+
+
+
+
+
+
+
+
+
+

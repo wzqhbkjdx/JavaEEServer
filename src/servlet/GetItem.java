@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import database.MyDatabase;
-import datamodel.NewsItemForClient;
+import datamodel.NewsItem;
 import fastjson.FastJsonTools;
 import rss.NewsData;
 import utils.DateGetter;
@@ -38,17 +38,17 @@ public class GetItem extends HttpServlet {
 		
 		Map<String,String> map = getParas(request,response); //得到request中的参数
 		if(map != null) {
-			List<NewsItemForClient> list = getNewsItemsFromDB(map); //根据参数查询数据库后将得到的item封装为List
+			List<NewsItem> list = getNewsItemsFromDB(map); //根据参数查询数据库后将得到的item封装为List
 			
 			//将获取的数据封装进NewsData数据模型中转换为Json格式返回给客户端
 			NewsData data = new NewsData();
 			if(list.size() > 0) {
-				data.setDate(DateGetter.getDate());
+				data.setDate(Long.valueOf(DateGetter.getDate()));
 				data.setError(MyConstants.NOERROR);
 				data.setErrorMessage("");
 				data.setNewsItems(list);
 			} else {
-				data.setDate(DateGetter.getDate());
+				data.setDate(Long.valueOf(DateGetter.getDate()));
 				data.setError(MyConstants.ERROR);
 				data.setErrorMessage("目前的数据是最新的");
 			}
@@ -91,9 +91,9 @@ public class GetItem extends HttpServlet {
 	 
 	}
 	
-	private List<NewsItemForClient> getNewsItemsFromDB(Map<String,String> map) {
-		List<NewsItemForClient> resultList = new ArrayList<>();
-		List<NewsItemForClient> partList = new ArrayList<>();
+	private List<NewsItem> getNewsItemsFromDB(Map<String,String> map) {
+		List<NewsItem> resultList = new ArrayList<>();
+		List<NewsItem> partList = new ArrayList<>();
 		MyDatabase mdb = new MyDatabase();
 		for(String str : map.keySet()) {
 			System.out.println(str + "------>" + map.get(str));

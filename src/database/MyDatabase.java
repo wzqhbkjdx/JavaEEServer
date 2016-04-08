@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import datamodel.NewsItemForClient;
+import datamodel.NewsItem;
+import rss.PicBanner;
 import utils.DateGetter;
 
 /**
@@ -33,6 +34,9 @@ import utils.DateGetter;
  * insert into newsDetail(NO,path) values('2016001','/Users/bym/xmldoc/2016001.xml')
  * 
  * 查询某id的pubdate最大值：select max(pubDate) from newsItem where id = '50';
+ * 
+ * pic新闻数据格式："create table if not exists picItem(id integer primary key auto_increment,title text,link text,description text,picLinks text,pubDate bigInt(20),original text,time timestamp default CURRENT_TIMESTAMP, detailNo text, category integer) charset utf8 collate utf8_general_ci";
+ * 
  */
 
 
@@ -42,6 +46,7 @@ public class MyDatabase {
 	private static final String CREATENEWSITEMTABLE = "create table if not exists newsItem(id integer primary key auto_increment, "
 			+ "title text,newsDetailLink text,picLink text,pubDate bigInt(20), original text,time timestamp default CURRENT_TIMESTAMP, detailNo text, category integer) charset utf8 collate utf8_general_ci";
 	private static final String CREATENEWSDETAILTABLE = "create table IF NOT EXISTS newsDetail(id integer primary key auto_increment,NO char(80),path text) charset utf8 collate utf8_general_ci";
+	private static final String CREATEPICITEMTABLE = "create table if not exists picItem(id integer primary key auto_increment,title text,link text,description text,picLinks text,pubDate bigInt(20),original text,time timestamp default CURRENT_TIMESTAMP, detailNo text, category integer) charset utf8 collate utf8_general_ci";
 	
 	
 	private static Connection conn = null;
@@ -74,7 +79,12 @@ public class MyDatabase {
         
 	}
 	
-	public static long getMaxPubdate(int category){
+	/**
+	 * 从新闻table里获取数据
+	 * @param category
+	 * @return
+	 */
+	public static long getMaxPubdateFromNewsItem(int category) {
 		initConnection();
 		long maxPubdate = 0;
 		try {
@@ -100,14 +110,49 @@ public class MyDatabase {
 		return maxPubdate;
 	}
 	
-	public static void insertNewsItems(List<NewsItemForClient> list){
+	/**
+	 * 从图片table里获取数据
+	 * @param category
+	 * @return
+	 */
+	public static long getMaxPubdateFromPicItem(int category) {
+		initConnection();
+		long maxPubdate = 0;
+		try {
+			if(result != -1) {
+				stmt.executeUpdate(CREATEPICITEMTABLE);
+				String sql = "select max(pubDate) from picItem where category = '" + category + "'";//select max(pubDate) from newsItem where id = '50';
+				ResultSet rs = stmt.executeQuery(sql);// executeQuery会返回结果的集合，否则返回空值
+				while (rs.next()) {
+					maxPubdate = rs.getLong(1);
+				}
+				
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return maxPubdate;
+	}
+	
+	/**
+	 * 向新闻列表table中插入条目
+	 * @param list
+	 */
+	public static void insertNewsItems(List<NewsItem> list){
 		initConnection();
 		try {
 			if(result != -1) {
 				stmt.executeUpdate(CREATENEWSITEMTABLE);
-				for(NewsItemForClient item : list) {
+				for(NewsItem item : list) {
 					stmt.executeUpdate("insert into newsItem(title,newsDetailLink,picLink,pubDate,original,detailNo,category)"    
-							+ "values('" + item.getTitle() + "','" + item.getNewsDetailLink() + "','" + item.getPicLink() + "','" + DateGetter.parsePubdateToLong(item.getPubDate()) + "','" + item.getOriginal() + "','" + item.getDetailNo() + "','" + item.getCategory() +"')");
+							+ "values('" + item.getTitle() + "','" + item.getNewsDetailLink() + "','" + item.getPicLink() + "','" + item.getPubDate() + "','" + item.getOriginal() + "','" + item.getDetailNo() + "','" + item.getCategory() +"')");
 					System.out.println("成功保存一条记录");
 				}
 				
@@ -123,6 +168,31 @@ public class MyDatabase {
 			}
 		}
 	}
+	
+	public static void insertPicItems(List<PicBanner> list) {
+		initConnection();
+		try {
+			if(result != -1) {
+				stmt.executeUpdate(CREATEPICITEMTABLE);
+				for(PicBanner item : list) {
+					stmt.executeUpdate("insert into picItem(title,link,picLinks,description,pubDate,original,detailNo,category)"    
+							+ "values('" + item.getTitle() + "','" + item.getLink() + "','" + item.getPicLinkString() + "','" + item.getDescription() + "','" + item.getPubDate() + "','" + item.getOriginal() + "','" + item.getDetailNo() + "','" + item.getCategory() +"')");
+					System.out.println("成功保存一条记录");
+				}
+				
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	
 	/**
 	 * 将新闻详情的xml文件路径保存到数据库中
@@ -157,22 +227,22 @@ public class MyDatabase {
 		
 	}
 	
-	public List<NewsItemForClient> queryNewsItemsFromDatabase(String pubDate,int category) {
-		List<NewsItemForClient> list = new ArrayList<>();
+	public List<NewsItem> queryNewsItemsFromDatabase(String pubDate,int category) {
+		List<NewsItem> list = new ArrayList<>();
 		long pubdate = Long.valueOf(pubDate);
 		initConnection();
 		try {
 			if(result != -1) { //select * from newsItem where pubDate > 20160331104122 and category = 1
 				stmt.executeUpdate(CREATENEWSITEMTABLE);
-				String sql = "select * from newsItem where pubDate > " + pubdate + " and category = " + category;
+				String sql = "select * from newsItem where pubDate > " + pubdate + " and category = " + category + " limit 10"; //每次最多返回10条数据
 				ResultSet rs = stmt.executeQuery(sql);// executeQuery会返回结果的集合，否则返回空值
 				while (rs.next()) {
-					NewsItemForClient item = new NewsItemForClient();
+					NewsItem item = new NewsItem();
 					item.setCategory(category);
 					item.setTitle(rs.getString(2));
 					item.setNewsDetailLink(rs.getString(3));
 					item.setPicLink(rs.getString(4));
-					item.setPubDate(rs.getString(5));
+					item.setPubDate(Long.valueOf(rs.getString(5)));
 					item.setOriginal(rs.getString(6));
 					item.setTimeStamp(rs.getString(7));
 					item.setDetailNo(rs.getString(8));

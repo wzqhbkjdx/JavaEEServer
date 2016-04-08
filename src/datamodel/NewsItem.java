@@ -1,11 +1,11 @@
 package datamodel;
 
-public class NewsItemForClient {
+public class NewsItem {
 	
 	private String title;
 	private String newsDetailLink;
 	private String picLink;
-	private String pubDate;
+	private long pubDate;
 	private String original;
 	private String timeStamp;
 	private String detailNo;
@@ -37,7 +37,7 @@ public class NewsItemForClient {
 		this.newsDetailLink = newsDetailLink;
 	}
 
-	public void NewsItemForClinet() {
+	public void NewsItem() {
 		
 	}
 	
@@ -61,10 +61,10 @@ public class NewsItemForClient {
 	public void setPicLink(String picLink) {
 		this.picLink = picLink;
 	}
-	public String getPubDate() {
+	public long getPubDate() {
 		return pubDate;
 	}
-	public void setPubDate(String pubDate) {
+	public void setPubDate(long pubDate) {
 		this.pubDate = pubDate;
 	}
 	public String getOriginal() {
