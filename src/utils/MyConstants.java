@@ -8,6 +8,7 @@ public class MyConstants {
 	
 	public static final int CATEGORYZGHKWNEWSCENTER = 1;
 	public static final int CATEGORYZGHKWLSJDHZ = 2;
+	public static final int CATEGORYZGHKWPICB = 1;
 	
 	public static final String XMLPATHOFNEWSCENTER = "/Users/bym/xmldoc/";
 	public static final String XMLPATHOFLSJDHZ = "/Users/bym/xmldoc2/";
@@ -19,7 +20,9 @@ public class MyConstants {
 	
 	public static final String NEWSCENTER = "ncpubdate";
 	public static final String LSJDHZ = "lspubdate";
+	public static final String PICBANNER = "picdate";
 	
-	public static final String NOERROR = "no error";
-	public static final String ERROR = "error";
+	public static final int NOERROR = 0;
+	public static final int ERRORLATESTDATA = 1;
+	public static final int ERRORNOMOREHISDATE = 2;
 }

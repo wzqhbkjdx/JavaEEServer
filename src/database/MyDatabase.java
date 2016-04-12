@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import datamodel.NewsItem;
+import datamodel.PicBannerForClient;
 import rss.PicBanner;
 import utils.DateGetter;
 
@@ -246,6 +247,98 @@ public class MyDatabase {
 					item.setOriginal(rs.getString(6));
 					item.setTimeStamp(rs.getString(7));
 					item.setDetailNo(rs.getString(8));
+					list.add(item);
+				}
+				
+				rs.close();
+				
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				stmt.close();
+				conn.close();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return list;
+	}
+	
+	/**
+	 * 从数据库中查询历史新闻
+	 * @param pubDate
+	 * @param category
+	 * @return
+	 */
+	public List<NewsItem> queryHisNewsItemsFromDatabase(String pubDate,int category) {
+		List<NewsItem> list = new ArrayList<>();
+		
+		long pubdate = Long.valueOf(pubDate);
+		initConnection();
+		try {
+			if(result != -1) { //select * from newsItem where pubDate < 20160431104122 and category = 1 limit 10
+				stmt.executeUpdate(CREATENEWSITEMTABLE);
+				String sql = "select * from newsItem where pubDate < " + pubdate + " and category = " + category + " limit 10"; //每次最多返回10条数据
+				ResultSet rs = stmt.executeQuery(sql);// executeQuery会返回结果的集合，否则返回空值
+				while (rs.next()) {
+					NewsItem item = new NewsItem();
+					item.setCategory(category);
+					item.setTitle(rs.getString(2));
+					item.setNewsDetailLink(rs.getString(3));
+					item.setPicLink(rs.getString(4));
+					item.setPubDate(Long.valueOf(rs.getString(5)));
+					item.setOriginal(rs.getString(6));
+					item.setTimeStamp(rs.getString(7));
+					item.setDetailNo(rs.getString(8));
+					list.add(item);
+				}
+				
+				rs.close();
+				
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				stmt.close();
+				conn.close();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
+		return list;
+	}
+	
+	
+	
+	public List<PicBannerForClient> queryPicBannerFromDataBase(String pubDate,int category) {
+		List<PicBannerForClient> list = new ArrayList<>();
+		long pubdate = Long.valueOf(pubDate);
+		initConnection();
+		try {
+			if(result != -1) { //select * from picItem where pubDate > 20160331104122 and category = 1 limit 5
+				stmt.executeUpdate(CREATENEWSITEMTABLE);
+				String sql = "select * from picItem where pubDate > " + pubdate + " and category = " + category + " limit 5"; //每次最多返回10条数据
+				ResultSet rs = stmt.executeQuery(sql);// executeQuery会返回结果的集合，否则返回空值
+				while (rs.next()) {
+					PicBannerForClient item = new PicBannerForClient();
+					item.setCategory(category);
+					item.setTitle(rs.getString(2));
+					item.setOriginalLink(rs.getString(3));
+					item.setDescription(rs.getString(4));
+					item.setPicLinks(rs.getString(5));
+					item.setPubDate(Long.valueOf(rs.getString(6)));
+					item.setOriginal(rs.getString(7));
+					item.setTimeStamp(rs.getString(8));
+					item.setDetailNo(rs.getString(9));
 					list.add(item);
 				}
 				

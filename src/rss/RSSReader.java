@@ -78,15 +78,15 @@ public class RSSReader {
 	
 	
 	public static void main(String[] args) {
-		List<PicBanner> picBanners = getPicRss("/Users/bym/Documents/NewFile.xml");
-		for(PicBanner banner : picBanners) {
-			System.out.println(banner.getPubDate());
-			System.out.println(banner.getDescription());
-			System.out.println(banner.getTitle());
-			System.out.println(banner.getLink());
-			System.out.println(banner.getPicLinks());
-		}
-		
+//		List<PicBanner> picBanners = getPicRss("/Users/bym/Documents/NewFile.xml");
+//		for(PicBanner banner : picBanners) {
+//			System.out.println(banner.getPubDate());
+//			System.out.println(banner.getDescription());
+//			System.out.println(banner.getTitle());
+//			System.out.println(banner.getLink());
+//			System.out.println(banner.getPicLinks());
+//		}
+//		
 	}
 	
 

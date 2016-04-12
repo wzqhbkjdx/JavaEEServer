@@ -47,13 +47,14 @@ public class StatisticsTask extends TimerTask {
 
 	private void executeTask() {
 		long start = System.currentTimeMillis();
-		DataResolver.dataResolve(MyConstants.RSSURLZGHKWLSJDHZ,"中国航空新闻网","/Users/bym/xmldoc/",MyConstants.CATEGORYZGHKWLSJDHZ);
-		DataResolver.dataResolve(MyConstants.RSSURLZGHKWNEWSCENTER,"中国航空新闻网","/Users/bym/xmldoc2/",MyConstants.CATEGORYZGHKWNEWSCENTER);
-		DataResolver.picDataResolve("/Users/bym/Documents/NewFile.xml", "中国航空新闻网", 1);
+//		DataResolver.dataResolve(MyConstants.RSSURLZGHKWLSJDHZ,"中国航空新闻网","/Users/bym/xmldoc/",MyConstants.CATEGORYZGHKWLSJDHZ);
+//		DataResolver.dataResolve(MyConstants.RSSURLZGHKWNEWSCENTER,"中国航空新闻网","/Users/bym/xmldoc2/",MyConstants.CATEGORYZGHKWNEWSCENTER);
+//		DataResolver.picDataResolve("/Users/bym/Documents/NewFile.xml", "中国航空新闻网", 1);
 		
 		
-//		DataResolver.dataResolve(MyConstants.RSSURLZGHKWLSJDHZ,"中国航空新闻网","/alidata/xmldoc/",MyConstants.CATEGORYZGHKWLSJDHZ);
-//		DataResolver.dataResolve(MyConstants.RSSURLZGHKWNEWSCENTER,"中国航空新闻网","/alidata/xmldoc2/",MyConstants.CATEGORYZGHKWNEWSCENTER);
+		DataResolver.dataResolve(MyConstants.RSSURLZGHKWLSJDHZ,"中国航空新闻网","/alidata/xmldoc/",MyConstants.CATEGORYZGHKWLSJDHZ);
+		DataResolver.dataResolve(MyConstants.RSSURLZGHKWNEWSCENTER,"中国航空新闻网","/alidata/xmldoc2/",MyConstants.CATEGORYZGHKWNEWSCENTER);
+		DataResolver.picDataResolve("/alidata/NewFile.xml", "中国航空新闻网", MyConstants.CATEGORYZGHKWPICB);
 		
 		long end = System.currentTimeMillis();
 		System.out.println("获取rss并保存数据共耗时：" + (end - start)/1000);

@@ -1,35 +1,43 @@
 package rss;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import datamodel.NewsItem;
+import datamodel.PicBannerForClient;
 
 public class NewsData {
 	private long date;
-    private String error;
-    private String ErrorMessage;
+    private int errorType;
     
-
     private List<NewsItem> newsItems;
-
-    public String getError() {
-        return error;
+    private List<PicBannerForClient> picBanners;
+    
+    public NewsData() {
+    	this.newsItems = new ArrayList<NewsItem>();
+    	this.picBanners = new ArrayList<PicBannerForClient>();
+    	
     }
 
-    public void setError(String error) {
-        this.error = error;
-    }
+    public List<PicBannerForClient> getPicBanners() {
+		return picBanners;
+	}
 
+	public void setPicBanners(List<PicBannerForClient> picBanners) {
+		this.picBanners = picBanners;
+	}
 
-    public String getErrorMessage() {
-        return ErrorMessage;
-    }
+	
 
-    public void setErrorMessage(String errorMessage) {
-        ErrorMessage = errorMessage;
-    }
+    public int getErrorType() {
+		return errorType;
+	}
 
-    public long getDate() {
+	public void setErrorType(int errorType) {
+		this.errorType = errorType;
+	}
+
+	public long getDate() {
         return date;
     }
 

@@ -22,35 +22,35 @@ import rss.NewsData;
 import utils.DateGetter;
 import utils.MyConstants;
 
-@WebServlet("/GetItem")
-public class GetItem extends HttpServlet {
+
+@WebServlet("/GetItemBefore")
+public class GetItemBefore extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-    public GetItem() {
+    
+    public GetItemBefore() {
         super();
         
     }
 
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
 		response.setContentType("text/html;charset=utf-8");  
         request.setCharacterEncoding("utf-8");  
         response.setCharacterEncoding("utf-8");  
-		
-		Map<String,String> map = getParas(request,response); //得到request中的参数
-		if(map != null) {
+        Map<String,String> map = getParas(request,response); //得到request中的参数
+        
+        if(map != null) {
 			NewsData data = getNewsItemsFromDB(map); //根据参数查询数据库后将得到的item封装为List
 			
 			//将获取的数据封装进NewsData数据模型中转换为Json格式返回给客户端
 			sendDataToClient(data,request,response);
 		}
-		
+        
 	}
 
-
+	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		
 	}
 	
 	/**
@@ -69,7 +69,6 @@ public class GetItem extends HttpServlet {
         System.out.print(result);
 	}
 	
-
 	/**
 	 * 从request中获取请求参数 键值对
 	 * @param request
@@ -90,7 +89,6 @@ public class GetItem extends HttpServlet {
 	            }
 	        }
 	        return map;
-	 
 	}
 	
 	/**
@@ -108,17 +106,10 @@ public class GetItem extends HttpServlet {
 			System.out.println(str + "------>" + map.get(str));
 			//将pubdate的值传递给数据库，查找到更新的新闻列表后返回
 			if(str.equals(MyConstants.NEWSCENTER)) {
-				partList = mdb.queryNewsItemsFromDatabase(map.get(str), MyConstants.CATEGORYZGHKWNEWSCENTER);
+				partList = mdb.queryHisNewsItemsFromDatabase(map.get(str), MyConstants.CATEGORYZGHKWNEWSCENTER);
 			} else if (str.equals(MyConstants.LSJDHZ)) {
-				partList = mdb.queryNewsItemsFromDatabase(map.get(str), MyConstants.CATEGORYZGHKWLSJDHZ);
-			} else if (str.equals(MyConstants.PICBANNER)) {
-				picBanners = mdb.queryPicBannerFromDataBase(map.get(str), MyConstants.CATEGORYZGHKWPICB);
-				
-				//测试用
-//				for(PicBanner banner : picBanners) {
-//					System.out.println(banner.getPicLinkString());
-//				}
-			}
+				partList = mdb.queryHisNewsItemsFromDatabase(map.get(str), MyConstants.CATEGORYZGHKWLSJDHZ);
+			} 
 			resultList.addAll(partList);
 		}
 		
@@ -129,7 +120,7 @@ public class GetItem extends HttpServlet {
 			data.setPicBanners(picBanners);
 		} else {
 			data.setDate(Long.valueOf(DateGetter.getDate()));
-			data.setErrorType(MyConstants.ERRORLATESTDATA);
+			data.setErrorType(MyConstants.ERRORNOMOREHISDATE);
 		}
 		
 //		if(resultList.size() != 0) {
@@ -137,7 +128,5 @@ public class GetItem extends HttpServlet {
 //		}
 		return data;
 	}
-	
-
 
 }
